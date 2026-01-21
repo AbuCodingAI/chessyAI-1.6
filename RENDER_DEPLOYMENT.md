@@ -96,7 +96,7 @@
 
 3. **When complete:**
    - Status changes to "Live" (green)
-   - You'll see your URL: `https://chessycom.onrender.com`
+   - You'll see your URL: `https://chessy-l1k1.onrender.com`
 
 ---
 
