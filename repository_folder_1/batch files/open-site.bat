@@ -1,0 +1,3 @@
+@echo off
+echo Opening ChessyCom...
+start "" "http://localhost:3000"

@@ -1,0 +1,11 @@
+{
+  "version": "Chessy 1.3",
+  "time_control": "bullet",
+  "network_type": "fast",
+  "training_positions": 5114,
+  "games_used": 200,
+  "epochs": 25,
+  "final_loss": 0.9232675433158875,
+  "final_val_loss": 0.872955858707428,
+  "trained_at": "2025-11-09 22:28:26"
+}

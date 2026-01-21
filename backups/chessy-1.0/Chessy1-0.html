@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chessy 1.0 - Neural Network AI</title>
+    <link rel="stylesheet" href="Chessy1-0.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>♔ Chessy 1.0 - Neural Network AI</h1>
+            <div class="status-bar">
+                <span id="connection-status" class="disconnected">⚠️ Checking server...</span>
+                <span id="model-status">Model: Not Loaded</span>
+            </div>
+        </header>
+
+        <!-- Server Not Running Alert -->
+        <div id="server-alert" class="server-alert" style="display: none;">
+            <div class="alert-content">
+                <h3>⚠️ Python Server Not Running</h3>
+                <p>The neural network AI requires a Python server to be running.</p>
+                <div class="alert-steps">
+                    <h4>Quick Start:</h4>
+                    <ol>
+                        <li>Open Command Prompt in this folder</li>
+                        <li>Run: <code>python chess_ai_server.py</code></li>
+                        <li>Wait for "Server ready!" message</li>
+                        <li>Click "Retry Connection" below</li>
+                    </ol>
+                    <p><strong>OR</strong> double-click <code>start_server.bat</code></p>
+                </div>
+                <div class="alert-buttons">
+                    <button id="retry-connection" class="btn btn-primary">🔄 Retry Connection</button>
+                    <button id="dismiss-alert" class="btn">Dismiss</button>
+                </div>
+            </div>
+        </div>
+
+        <main></main>
+        <div class="game-section">
+            <div class="player-info">
+                <div class="player-name">Neural AI</div>
+                <div class="player-rating" id="ai-rating">Rating: Calculating...</div>
+                <div class="ai-thinking" id="ai-thinking"></div>
+            </div>
+
+            <div class="board-container">
+                <div id="board" class="board"></div>
+            </div>
+
+            <div class="player-info">
+                <div class="player-name">You</div>
+                <div class="player-rating">Rating: 1200</div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="panel">
+                <h3>Neural Network Settings</h3>
+                <div class="setting">
+                    <label>AI Model:</label>
+                    <select id="model-select">
+                        <option value="basic">Basic CNN (Fast)</option>
+                        <option value="deep">Deep CNN (Strong)</option>
+                        <option value="residual">ResNet (Strongest)</option>
+                        <option value="transformer">Transformer (Experimental)</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <label>Search Depth:</label>
+                    <input type="range" id="depth-slider" min="1" max="10" value="5">
+                    <span id="depth-value">5</span>
+                </div>
+                <div class="setting">
+                    <label>Temperature:</label>
+                    <input type="range" id="temp-slider" min="0" max="100" value="10">
+                    <span id="temp-value">0.1</span>
+                </div>
+                <button id="new-game" class="btn btn-primary">New Game</button>
+            </div>
+
+            <div class="panel">
+                <h3>Move History</h3>
+                <div id="move-history" class="move-history"></div>
+            </div>
+
+            <div class="panel">
+                <h3>AI Analysis</h3>
+                <div id="ai-analysis" class="ai-analysis">
+                    <div class="analysis-item">
+                        <span class="label">Position Eval:</span>
+                        <span id="eval-score">+0.00</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="label">Best Move:</span>
+                        <span id="best-move">-</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="label">Confidence:</span>
+                        <span id="confidence">-</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="label">Nodes Searched:</span>
+                        <span id="nodes">0</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="label">Search Time:</span>
+                        <span id="search-time">0ms</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Training Info</h3>
+                <div id="training-info">
+                    <p>Model trained on: <strong id="training-games">0</strong> games</p>
+                    <p>Training accuracy: <strong id="training-acc">0%</strong></p>
+                    <p>Last updated: <strong id="last-update">Never</strong></p>
+                    <button id="retrain-btn" class="btn">Retrain Model</button>
+                </div>
+            </div>
+        </div>
+        </main>
+
+        <footer>
+            <div class="server-info">
+                <span>Server: <span id="server-url">http://localhost:5000</span></span>
+                <button id="connect-btn" class="btn-small">Connect</button>
+                <button id="test-btn" class="btn-small">Test Connection</button>
+            </div>
+        </footer>
+    </div>
+
+    <script src="Chessy1-0.js"></script>
+</body>
+
+</html>

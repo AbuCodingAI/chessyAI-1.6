@@ -1,0 +1,10 @@
+# Chessy 1.0 - Neural Network AI Requirements
+# Install with: pip install -r requirements.txt
+
+flask>=2.3.0
+flask-cors>=4.0.0
+tensorflow>=2.13.0
+numpy>=1.24.0
+python-chess>=1.999
+
+# Note: chess.engine is INSIDE python-chess, not a separate package!

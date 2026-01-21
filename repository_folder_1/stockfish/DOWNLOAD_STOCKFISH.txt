@@ -1,0 +1,16 @@
+STOCKFISH CHESS ENGINE - DOWNLOAD REQUIRED
+
+The Stockfish executable is too large for GitHub (76MB).
+
+Please download it separately:
+
+1. Go to: https://stockfishchess.org/download/
+2. Download: Stockfish 16 for Windows (x86-64-avx2)
+3. Extract the .exe file
+4. Place it in this folder: stockfish/
+5. Rename to: stockfish-windows-x86-64-avx2.exe
+
+Or use the direct link:
+https://github.com/official-stockfish/Stockfish/releases
+
+The AI will work without Stockfish, but some personalities require it.

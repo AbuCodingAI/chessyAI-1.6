@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chessy - Play Chess Online</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="header">
+    <div class="logo">♔ Chessy</div>
+    <nav class="nav">
+      <button class="nav-btn active" data-view="play">Play</button>
+      <button class="nav-btn" data-view="puzzles">Puzzles</button>
+      <button class="nav-btn" data-view="learn">Learn</button>
+      <button class="nav-btn" data-view="achievements">Achievements</button>
+      <button class="nav-btn" data-view="stats">Stats</button>
+      <button class="nav-btn" data-view="profile">Profile</button>
+      <button class="nav-btn" data-view="settings">Settings</button>
+      <button class="nav-btn neural-ai-btn" data-view="neural-ai">🧠 Neural AI</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div id="play-view" class="view active">
+      <button id="fullscreen-toggle" class="fullscreen-btn">⛶ Fullscreen Game</button>
+
+      <div class="game-container" id="game-container">
+        <div class="game-area">
+          <div class="game-info">
+            <div class="player-info">
+              <div class="player-name">Opponent</div>
+              <div class="captured-pieces" id="captured-white"></div>
+            </div>
+            <div class="timer" id="timer-black">10:00</div>
+          </div>
+
+          <div class="board-wrapper">
+            <div id="board" class="board"></div>
+          </div>
+
+          <div class="game-info">
+            <div class="player-info">
+              <div class="player-name">You</div>
+              <div class="captured-pieces" id="captured-black"></div>
+            </div>
+            <div class="timer" id="timer-white">10:00</div>
+          </div>
+        </div>
+
+        <div class="game-sidebar" id="game-sidebar">
+          <div class="panel">
+            <h3>Move History</h3>
+            <div id="move-history" class="move-history"></div>
+          </div>
+
+          <div class="panel">
+            <h3>Game Status</h3>
+            <div id="game-status" class="game-status">White to move</div>
+          </div>
+
+          <div class="panel">
+            <button id="undo-move" class="btn">Undo Move</button>
+            <button id="resign" class="btn btn-danger">Resign</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar setup-sidebar" id="setup-sidebar">
+        <div class="panel"
+          style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+          <h3 style="color: white;">🌟 Chessy 1.4 is Here!</h3>
+          <p style="margin: 0.5rem 0; font-size: 0.9rem;">
+            GM-level AI (~2700+ ELO) with smart quiescence search!
+          </p>
+          <p style="margin: 0.5rem 0; font-size: 0.85rem; opacity: 0.9;">
+            Select "AI - Chessy 1.4" from the dropdown below to play!
+          </p>
+        </div>
+
+        <div class="panel">
+          <h3>Game Mode</h3>
+          <select id="game-mode" class="select">
+            <option value="local">Local 2 Player (Same Device)</option>
+            <option value="ai-noob">AI - Noob (Elo 100)</option>
+            <option value="ai-beginner">AI - Beginner (Elo 400)</option>
+            <option value="ai-average">AI - Average (Elo 1200)</option>
+            <option value="ai-good">AI - Good (Elo 1500)</option>
+            <option value="ai-awesome">AI - Awesome (Elo 1800)</option>
+            <option value="ai-master">AI - Master (Elo 2000)</option>
+            <option value="ai-im">AI - IM (Elo 2500)</option>
+            <option value="ai-gm">AI - GM (Elo 2500)</option>
+            <option value="ai-supergm">AI - Super GM (Elo 2700)</option>
+            <option value="ai-chessy13">AI - Chessy 1.3 (Elo 2500) 🎖️</option>
+            <option value="ai-chessy14">AI - Chessy 1.4 (Elo 2700+) 🌟</option>
+            <option value="ai-randomguy">AI - Random Guy (Elo 1) 🔥</option>
+            <option value="ai-mystery">AI - Mystery (Elo ??)</option>
+            <option value="ai-randy">AI - Randy (Pure Random) 🎲</option>
+            <option value="ai-antiguess">AI - AntiGuess (Worst Moves) 🤡</option>
+            <option value="ai-trashtalker">AI - Trash Talker (Elo 3400) 💬</option>
+            <option value="ai-chocker">AI - Chocker (ULTIMATE DISRESPECT) 🤡👑🔥</option>
+          </select>
+
+          <h3 style="margin-top: 1rem;">Play As</h3>
+          <select id="player-color" class="select">
+            <option value="white" selected>White (You move first)</option>
+            <option value="black">Black (AI moves first)</option>
+            <option value="random">Random</option>
+          </select>
+
+          <h3 style="margin-top: 1rem;">Time Control</h3>
+          <select id="time-control" class="select">
+            <option value="bullet1">Bullet - 1 min</option>
+            <option value="bullet2">Bullet - 2|1 (2min + 1sec)</option>
+            <option value="blitz3">Blitz - 3 min</option>
+            <option value="blitz5">Blitz - 5 min</option>
+            <option value="rapid10" selected>Rapid - 10 min</option>
+            <option value="rapid15">Rapid - 15|10</option>
+            <option value="classical30">Classical - 30 min</option>
+            <option value="unlimited">Unlimited</option>
+          </select>
+
+          <button id="new-game" class="btn btn-primary">New Game</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="stats-view" class="view">
+      <div class="stats-container">
+        <h2>Your Statistics</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Games Played</div>
+            <div class="stat-value" id="games-played">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Wins</div>
+            <div class="stat-value" id="wins">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Losses</div>
+            <div class="stat-value" id="losses">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Draws</div>
+            <div class="stat-value" id="draws">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Win Rate</div>
+            <div class="stat-value" id="win-rate">0%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Moves</div>
+            <div class="stat-value" id="total-moves">0</div>
+          </div>
+        </div>
+        <button id="reset-stats" class="btn btn-danger">Reset Statistics</button>
+      </div>
+    </div>
+
+    <div id="puzzles-view" class="view">
+      <div class="content-container">
+        <h2>♟️ Chess Puzzles</h2>
+        <div class="puzzle-container">
+          <div class="puzzle-board-wrapper">
+            <div id="puzzle-board" class="board"></div>
+          </div>
+          <div class="puzzle-info">
+            <div class="puzzle-header">
+              <span class="puzzle-theme-badge" id="puzzle-theme">Fork</span>
+              <span class="puzzle-difficulty" id="puzzle-difficulty">⭐ 800</span>
+            </div>
+            <h3 id="puzzle-title">Find the best move!</h3>
+            <p id="puzzle-description">White to move and win material</p>
+
+            <div class="puzzle-controls">
+              <button id="puzzle-hint" class="btn btn-secondary">💡 Hint</button>
+              <button id="puzzle-solution" class="btn btn-secondary">👁️ Show Solution</button>
+              <button id="next-puzzle" class="btn btn-primary">➡️ Next Puzzle</button>
+            </div>
+
+            <div id="puzzle-feedback" class="puzzle-feedback"></div>
+
+            <div class="puzzle-progress">
+              <p>Your Puzzle Rating: <strong id="user-puzzle-rating">1200</strong></p>
+              <p>Puzzles Solved: <strong id="puzzles-solved">0</strong></p>
+              <p>Current Streak: <strong id="puzzle-streak">0</strong> 🔥</p>
+            </div>
+          </div>
+        </div>
+        <div class="puzzle-stats">
+          <div class="stat-card">
+            <div class="stat-label">Puzzles Solved</div>
+            <div class="stat-value" id="puzzles-solved">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Puzzle Rating</div>
+            <div class="stat-value" id="puzzle-user-rating">1200</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Streak</div>
+            <div class="stat-value" id="puzzle-streak">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="learn-view" class="view">
+      <div class="content-container">
+        <h2>Learn Chess</h2>
+        <div class="learn-grid">
+          <div class="learn-card">
+            <div class="learn-icon">📚</div>
+            <h3>Opening Principles</h3>
+            <p>Control the center, develop pieces, castle early</p>
+            <button class="btn">Start Lesson</button>
+          </div>
+          <div class="learn-card">
+            <div class="learn-icon">⚔️</div>
+            <h3>Tactical Patterns</h3>
+            <p>Learn forks, pins, skewers, and discovered attacks</p>
+            <button class="btn">Start Lesson</button>
+          </div>
+          <div class="learn-card">
+            <div class="learn-icon">👑</div>
+            <h3>Endgame Mastery</h3>
+            <p>Master king and pawn endgames</p>
+            <button class="btn">Start Lesson</button>
+          </div>
+          <div class="learn-card">
+            <div class="learn-icon">🎯</div>
+            <h3>Checkmate Patterns</h3>
+            <p>Back rank mate, smothered mate, and more</p>
+            <button class="btn">Start Lesson</button>
+          </div>
+          <div class="learn-card">
+            <div class="learn-icon">🧠</div>
+            <h3>Strategy Fundamentals</h3>
+            <p>Pawn structure, piece activity, king safety</p>
+            <button class="btn">Start Lesson</button>
+          </div>
+          <div class="learn-card">
+            <div class="learn-icon">📊</div>
+            <h3>Game Analysis</h3>
+            <p>Learn to analyze your games effectively</p>
+            <button class="btn">Start Lesson</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="achievements-view" class="view">
+      <div class="content-container">
+        <h2>Achievements</h2>
+        <div class="achievements-grid" id="achievements-grid"></div>
+      </div>
+    </div>
+
+    <div id="profile-view" class="view">
+      <div class="content-container">
+        <h2>Your Profile</h2>
+        <div class="profile-container">
+          <div class="profile-header-section">
+            <div class="avatar-section">
+              <div id="user-avatar" class="user-avatar">👤</div>
+              <button id="change-avatar" class="btn">Change Avatar</button>
+            </div>
+            <div class="profile-details">
+              <input type="text" id="username" class="username-input" placeholder="Your Username" value="ChessPlayer">
+              <div class="profile-stats-mini">
+                <div>Member since: <span id="member-since">2025</span></div>
+                <div>Games: <span id="profile-games">0</span></div>
+                <div>Win Rate: <span id="profile-winrate">0%</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rating-cards">
+            <div class="rating-card">
+              <h3>Rapid</h3>
+              <div class="rating-value" id="rapid-rating">1200</div>
+              <div class="rating-label">Rating</div>
+            </div>
+            <div class="rating-card">
+              <h3>Blitz</h3>
+              <div class="rating-value" id="blitz-rating">1200</div>
+              <div class="rating-label">Rating</div>
+            </div>
+            <div class="rating-card">
+              <h3>Bullet</h3>
+              <div class="rating-value" id="bullet-rating">1200</div>
+              <div class="rating-label">Rating</div>
+            </div>
+          </div>
+
+          <div class="recent-achievements">
+            <h3>Recent Achievements</h3>
+            <div id="recent-achievements-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="settings-view" class="view">
+      <div class="content-container">
+        <h2>Settings</h2>
+
+        <div class="panel">
+          <h3>Appearance</h3>
+          <label class="checkbox-label">
+            <input type="checkbox" id="dark-mode-toggle">
+            <span>🌙 Dark Mode</span>
+          </label>
+        </div>
+
+        <div class="panel">
+          <h3>Board Theme</h3>
+          <div class="theme-options">
+            <button class="theme-btn active" data-theme="classic">Classic</button>
+            <button class="theme-btn" data-theme="modern">Modern</button>
+            <button class="theme-btn" data-theme="wood">Wood</button>
+            <button class="theme-btn" data-theme="blue">Blue</button>
+            <button class="theme-btn" data-theme="green">Green</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Piece Style</h3>
+          <div class="piece-style-options">
+            <button class="piece-style-btn active" data-style="classic">Classic</button>
+            <button class="piece-style-btn" data-style="modern">Modern</button>
+            <button class="piece-style-btn" data-style="alpha">Alpha</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Game Settings</h3>
+          <label class="checkbox-label">
+            <input type="checkbox" id="sound-toggle" checked>
+            <span>🔊 Enable move sounds</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="hints-toggle" checked>
+            <span>💡 Highlight legal moves</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="coordinates-toggle" checked>
+            <span>🔢 Show board coordinates</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="animations-toggle" checked>
+            <span>✨ Piece animations</span>
+          </label>
+        </div>
+
+        <div class="panel">
+          <h3>Auto-Promotion</h3>
+          <select id="auto-promote" class="select">
+            <option value="queen">Always Queen</option>
+            <option value="ask">Ask Every Time</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="neural-ai-view" class="view">
+      <div class="content-container">
+        <h2>🧠 Chessy Neural AI Engines</h2>
+        <p class="subtitle">Play against Chessy - our trained neural network chess AI
+      </div>p>
+
+      <div class="neural-ai-grid">
+        <!-- Chessy 1.0 Initial -->
+        <div class="neural-ai-card">
+          <div class="ai-header">
+            <h3>♟️ Chessy 1.0 - Initial</h3>
+            <span class="ai-badge basic">Basic</span>
+          </div>
+          <div class="ai-stats">
+            <div class="stat">
+              <span class="stat-label">ELO Rating</span>
+              <span class="stat-value">~1200</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Training</span>
+              <span class="stat-value">10k positions</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Method</span>
+              <span class="stat-value">Random + Material</span>
+            </div>
+          </div>
+          <p class="ai-description">
+            First version trained on random positions with enhanced material evaluation.
+            Good for beginners learning chess fundamentals.
+          </p>
+          <a href="PLAY_CHESSY_1.0.bat" class="btn btn-primary">
+            Play Chessy 1.0 →
+          </a>
+        </div>
+
+        <!-- Chessy 1.0 Self-Play -->
+        <div class="neural-ai-card">
+          <div class="ai-header">
+            <h3>🎮 Chessy 1.0 - Self-Play</h3>
+            <span class="ai-badge intermediate">Intermediate</span>
+          </div>
+          <div class="ai-stats">
+            <div class="stat">
+              <span class="stat-label">ELO Rating</span>
+              <span class="stat-value">~1400</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Training</span>
+              <span class="stat-value">100 games</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Method</span>
+              <span class="stat-value">AI vs AI Self-Play</span>
+            </div>
+          </div>
+          <p class="ai-description">
+            Improved through self-play training. Learns from experience by playing
+            against itself and reviewing games. Better tactical awareness.
+          </p>
+          <a href="PLAY_CHESSY_1.0.bat" class="btn btn-primary">
+            Play Self-Play →
+          </a>
+        </div>
+
+        <!-- Chessy 1.1 Magnus -->
+        <div class="neural-ai-card featured">
+          <div class="ai-header">
+            <h3>🏆 Chessy 1.1 - Magnus Edition</h3>
+            <span class="ai-badge advanced">Advanced</span>
+          </div>
+          <div class="ai-stats">
+            <div class="stat">
+              <span class="stat-label">ELO Rating</span>
+              <span class="stat-value">~1600</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Training</span>
+              <span class="stat-value">31k positions</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Method</span>
+              <span class="stat-value">500 Magnus Games</span>
+            </div>
+          </div>
+          <p class="ai-description">
+            Trained on 500 games from Magnus Carlsen (World Champion). Learns grandmaster
+            opening theory, tactics, and positional play. Strong club player level.
+          </p>
+          <a href="PLAY_CHESSY_1.1.bat" class="btn btn-primary">
+            Play Magnus AI →
+          </a>
+        </div>
+
+        <!-- Chessy 1.2 Stockfish -->
+        <div class="neural-ai-card featured">
+          <div class="ai-header">
+            <h3>⚡ Chessy 1.2 - Stockfish Powered</h3>
+            <span class="ai-badge expert">Expert</span>
+          </div>
+          <div class="ai-stats">
+            <div class="stat">
+              <span class="stat-label">ELO Rating</span>
+              <span class="stat-value">~2100</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Training</span>
+              <span class="stat-value">13.5k positions</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Method</span>
+              <span class="stat-value">Stockfish Evaluation</span>
+            </div>
+          </div>
+          <p class="ai-description">
+            Trained with Stockfish 16+ (3740 ELO) evaluations. Expert-level position
+            understanding with precise tactical and positional play. Club champion strength.
+          </p>
+          <a href="PLAY_CHESSY_1.2.bat" class="btn btn-primary">
+            Play Stockfish AI →
+          </a>
+        </div>
+
+        <!-- Chocker -->
+        <div class="neural-ai-card featured">
+          <div class="ai-header">
+            <h3>🤡 CHOCKER - ULTIMATE DISRESPECT</h3>
+            <span class="ai-badge troll">MADMAN</span>
+          </div>
+          <div class="ai-stats">
+            <div class="stat">
+              <span class="stat-label">ELO Rating</span>
+              <span class="stat-value">??? (Chaotic Evil)</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Strategy</span>
+              <span class="stat-value">Throw + Rage Mode</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Catchphrase</span>
+              <span class="stat-value">ULTIMATE DISRESPECT</span>
+            </div>
+          </div>
+          <p class="ai-description">
+            MUST play en passant. MUST stalemate if possible. Throws advantages when winning.
+            RAGE MODE: If opponent doesn't en passant, Chocker goes 3000 ELO and destroys you!
+          </p>
+          <a href="batch files/PLAY_CHESSY_COMEDIAN.bat" class="btn btn-primary">
+            Play Chocker →
+          </a>
+        </div>
+
+        <!-- Chessy 1.3 - IM Level -->
+        <div class="neural-ai-card">
+          <div class="ai-header">
+            <h3>🎖️ Chessy 1.3 - IM Level</h3>
+            <span class="ai-badge im">IM</span>
+          </div>
+          <div class="ai-stats">
+            <div class="stat">
+              <span class="stat-label">ELO Rating</span>
+              <span class="stat-value">~2500</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Search Depth</span>
+              <span class="stat-value">7 moves</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Method</span>
+              <span class="stat-value">Deep Search</span>
+            </div>
+          </div>
+          <p class="ai-description">
+            Trained on diverse Stockfish positions with deep minimax search.
+            International Master level strength. Sees 7 moves ahead with alpha-beta pruning.
+          </p>
+          <button class="btn btn-primary"
+            onclick="alert('Chessy 1.3 is available!\n\n1. Select AI mode from dropdown above\n2. Choose: AI - Chessy 1.3 (Elo 2500)\n3. Start playing!')">
+            How to Play
+          </button>
+        </div>
+
+        <!-- Chessy 1.4 - GM Level -->
+        <div class="neural-ai-card featured">
+          <div class="ai-header">
+            <h3>🌟 Chessy 1.4 - GM Level</h3>
+            <span class="ai-badge gm">GM</span>
+          </div>
+          <div class="ai-stats">
+            <div class="stat">
+              <span class="stat-label">ELO Rating</span>
+              <span class="stat-value">~2700+</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Search Depth</span>
+              <span class="stat-value">10 + Quiescence</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Method</span>
+              <span class="stat-value">Smart Quiescence</span>
+            </div>
+          </div>
+          <p class="ai-description">
+            Grandmaster-level AI with smart quiescence search. Extends search after captures/checks
+            until position is quiet. Never stops mid-tactic. "Eye of hurricane" verification.
+          </p>
+          <button class="btn btn-primary"
+            onclick="alert('Chessy 1.4 is available!\n\n1. Select AI mode from dropdown above\n2. Choose: AI - Chessy 1.4 (Elo 2700+)\n3. Start playing!\n\n⭐ GM-level strength with smart quiescence search!')">
+            How to Play ⭐
+          </button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>📊 Training Information</h3>
+        <p>All neural AI models are trained using deep convolutional neural networks (CNNs)
+          with TensorFlow. Each version improves upon the previous through better training data
+          and methods.</p>
+
+        <div class="training-comparison">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>ELO</th>
+                <th>Training Method</th>
+                <th>Positions</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1.0 Initial</td>
+                <td>1200</td>
+                <td>Random positions</td>
+                <td>10,000</td>
+                <td>15 min</td>
+              </tr>
+              <tr>
+                <td>1.0 Self-Play</td>
+                <td>1400</td>
+                <td>AI vs AI</td>
+                <td>~8,500</td>
+                <td>25 min</td>
+              </tr>
+              <tr>
+                <td>1.1 Magnus</td>
+                <td>1600</td>
+                <td>GM games</td>
+                <td>30,997</td>
+                <td>45 min</td>
+              </tr>
+              <tr class="highlight">
+                <td>1.2 Stockfish</td>
+                <td>2100</td>
+                <td>Stockfish eval</td>
+                <td>13,500</td>
+                <td>1.2 hrs</td>
+              </tr>
+              <tr class="coming-soon-row">
+                <td>1.3 Time Control</td>
+                <td>2400</td>
+                <td>Time-aware</td>
+                <td>TBD</td>
+                <td>5 hrs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>🎮 How to Play</h3>
+        <ol class="instructions-list">
+          <li>Click on any AI version above to open it in a new tab</li>
+          <li>Make sure the Python server is running (see documentation)</li>
+          <li>The AI will play as Black, you play as White</li>
+          <li>Adjust difficulty and settings in the AI interface</li>
+          <li>Have fun and improve your chess skills!</li>
+        </ol>
+      </div>
+
+      <div class="panel">
+        <h3>📚 Documentation</h3>
+        <p>For detailed information about training, setup, and technical details:</p>
+        <ul class="doc-links">
+          <li><a href="docs/README.md" target="_blank">📖 Full Documentation</a></li>
+          <li><a href="docs/training/TRAINING_STATUS.md" target="_blank">📊 Training Status</a></li>
+          <li><a href="docs/training/TRAINING_GUIDE.md" target="_blank">🎓 Training Guide</a></li>
+          <li><a href="neural-ai/VERSION.md" target="_blank">📝 Version History</a></li>
+        </ul>
+      </div>
+    </div>
+    </div>
+  </main>
+
+  <div id="avatar-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Choose Your Avatar</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="avatar-grid">
+        <div class="avatar-option" data-avatar="👤">👤</div>
+        <div class="avatar-option" data-avatar="😀">😀</div>
+        <div class="avatar-option" data-avatar="😎">😎</div>
+        <div class="avatar-option" data-avatar="🤓">🤓</div>
+        <div class="avatar-option" data-avatar="🧙">🧙</div>
+        <div class="avatar-option" data-avatar="🦁">🦁</div>
+        <div class="avatar-option" data-avatar="🐯">🐯</div>
+        <div class="avatar-option" data-avatar="🦅">🦅</div>
+        <div class="avatar-option" data-avatar="🐉">🐉</div>
+        <div class="avatar-option" data-avatar="🦄">🦄</div>
+        <div class="avatar-option" data-avatar="👑">👑</div>
+        <div class="avatar-option" data-avatar="⚡">⚡</div>
+        <div class="avatar-option" data-avatar="🔥">🔥</div>
+        <div class="avatar-option" data-avatar="⭐">⭐</div>
+        <div class="avatar-option" data-avatar="💎">💎</div>
+        <div class="avatar-option" data-avatar="🎯">🎯</div>
+        <div class="avatar-option" data-avatar="🏆">🏆</div>
+        <div class="avatar-option" data-avatar="🎮">🎮</div>
+        <div class="avatar-option" data-avatar="🎨">🎨</div>
+        <div class="avatar-option" data-avatar="🚀">🚀</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

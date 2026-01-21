@@ -1,0 +1,68 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Neural Network Models (large files)
+*.h5
+*.hdf5
+*.pb
+*.ckpt
+*.pth
+
+# Training data
+*.pgn
+training_data/
+*.csv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Backups (optional - you might want to keep some)
+backups/chessy-1.2/
+
+# Personal files
+.env
+.env.local
+config.local.js
+
+# Large binary files
+stockfish/*.exe
+stockfish/*.bin
+
+# Test files (optional)
+test-*.html
+.vercel

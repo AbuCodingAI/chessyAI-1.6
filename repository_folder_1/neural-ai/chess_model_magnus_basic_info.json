@@ -1,0 +1,13 @@
+{
+  "version": "Chessy 1.1",
+  "training_method": "Magnus Carlsen Games",
+  "model_type": "basic",
+  "training_positions": 30997,
+  "games_used": 500,
+  "epochs": 30,
+  "final_loss": 0.6161103844642639,
+  "final_val_loss": 0.5608962178230286,
+  "final_mae": 0.7389907836914062,
+  "final_val_mae": 0.6720578670501709,
+  "trained_at": "2025-11-09 20:58:32"
+}
