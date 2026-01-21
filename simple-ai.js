@@ -480,7 +480,7 @@ const AI_PERSONALITIES = {
     },
     'chessy13': {
         name: 'Chessy 1.3',
-        elo: 2500,
+        elo: 1700,
         description: 'Neural network with deep search (depth 7). IM level strength.',
         emoji: '🎖️',
         usesStockfish: false,
