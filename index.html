@@ -6,9 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chessy - Play Chess Online</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
 </head>
 
 <body>
@@ -84,7 +81,7 @@
           style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
           <h3 style="color: white;">🌟 Chessy 1.4 is Here!</h3>
           <p style="margin: 0.5rem 0; font-size: 0.9rem;">
-            GM-level AI (~2700+ ELO) with smart quiescence search!
+            Expert-level AI (~1800 ELO) with smart quiescence search!
           </p>
           <p style="margin: 0.5rem 0; font-size: 0.85rem; opacity: 0.9;">
             Select "AI - Chessy 1.4" from the dropdown below to play!
@@ -105,7 +102,7 @@
             <option value="ai-gm">AI - GM (Elo 2500)</option>
             <option value="ai-supergm">AI - Super GM (Elo 2700)</option>
             <option value="ai-chessy13">AI - Chessy 1.3 (Elo 1700) 🎖️</option>
-            <option value="ai-chessy14">AI - Chessy 1.4 (Elo 2700+) 🌟</option>
+            <option value="ai-chessy14">AI - Chessy 1.4 (Elo 1800) 🌟</option>
             <option value="ai-randomguy">AI - Random Guy (Elo 1) 🔥</option>
             <option value="ai-mystery">AI - Mystery (Elo ??)</option>
             <option value="ai-randy">AI - Randy (Pure Random) 🎲</option>
@@ -538,16 +535,16 @@
           </button>
         </div>
 
-        <!-- Chessy 1.4 - GM Level -->
+        <!-- Chessy 1.4 - Expert Level -->
         <div class="neural-ai-card featured">
           <div class="ai-header">
-            <h3>🌟 Chessy 1.4 - GM Level</h3>
-            <span class="ai-badge gm">GM</span>
+            <h3>🌟 Chessy 1.4 - Expert Level</h3>
+            <span class="ai-badge expert">Expert</span>
           </div>
           <div class="ai-stats">
             <div class="stat">
               <span class="stat-label">ELO Rating</span>
-              <span class="stat-value">~2700+</span>
+              <span class="stat-value">~1800</span>
             </div>
             <div class="stat">
               <span class="stat-label">Search Depth</span>
@@ -563,7 +560,7 @@
             until position is quiet. Never stops mid-tactic. "Eye of hurricane" verification.
           </p>
           <button class="btn btn-primary"
-            onclick="alert('Chessy 1.4 is available!\n\n1. Select AI mode from dropdown above\n2. Choose: AI - Chessy 1.4 (Elo 2700+)\n3. Start playing!\n\n⭐ GM-level strength with smart quiescence search!')">
+            onclick="alert('Chessy 1.4 is available!\n\n1. Select AI mode from dropdown above\n2. Choose: AI - Chessy 1.4 (Elo 1800)\n3. Start playing!\n\n⭐ Expert-level strength with smart quiescence search!')">
             How to Play ⭐
           </button>
         </div>

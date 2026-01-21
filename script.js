@@ -1,32 +1,21 @@
-// Firebase Configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDemoKey123456789", // Replace with your Firebase API key
-  authDomain: "chessy-app.firebaseapp.com",
-  projectId: "chessy-app",
-  storageBucket: "chessy-app.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
-};
+// Firebase Configuration (Disabled - not needed for basic game)
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDemoKey123456789",
+//   authDomain: "chessy-app.firebaseapp.com",
+//   projectId: "chessy-app",
+//   storageBucket: "chessy-app.appspot.com",
+//   messagingSenderId: "123456789",
+//   appId: "1:123456789:web:abcdef123456"
+// };
 
-// Initialize Firebase (will be configured with real credentials)
 let firebaseApp = null;
 let auth = null;
 let currentUser = null;
 
 // Initialize Firebase when config is available
 function initializeFirebase() {
-  try {
-    firebaseApp = firebase.initializeApp(firebaseConfig);
-    auth = firebase.auth();
-
-    // Monitor auth state
-    auth.onAuthStateChanged((user) => {
-      currentUser = user;
-      updateAuthUI();
-    });
-  } catch (error) {
-    console.warn('Firebase not initialized:', error.message);
-  }
+  // Firebase disabled for now
+  console.log('Firebase initialization skipped');
 }
 
 // Chess Game State

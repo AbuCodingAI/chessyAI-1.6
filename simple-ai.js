@@ -488,8 +488,8 @@ const AI_PERSONALITIES = {
     },
     'chessy14': {
         name: 'Chessy 1.4',
-        elo: 2700,
-        description: 'Neural network with smart quiescence search (depth 10+). GM level strength.',
+        elo: 1800,
+        description: 'Neural network with smart quiescence search (depth 10+). Expert level strength.',
         emoji: '🌟',
         usesStockfish: false,
         special: 'Neural AI with quiescence search'
