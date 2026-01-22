@@ -262,18 +262,6 @@ io.on('connection', (socket) => {
     });
 });
 
-// API endpoint for AI moves (using Stockfish)
-app.post('/api/ai-move', async (req, res) => {
-    const { fen, difficulty } = req.body;
-
-    // TODO: Integrate with Stockfish
-    // For now, return random legal move
-    const game = new Chess(fen);
-    const moves = game.moves({ verbose: true });
-    const randomMove = moves[Math.floor(Math.random() * moves.length)];
-
-    res.json({ move: randomMove });
-});
 
 // Start server
 const PORT = process.env.PORT || 3000;

@@ -224,6 +224,15 @@ function renderBoard() {
       square.dataset.row = row;
       square.dataset.col = col;
 
+      // Highlight last move squares
+      if (gameState.lastMove) {
+        const [fromRow, fromCol] = gameState.lastMove.from;
+        const [toRow, toCol] = gameState.lastMove.to;
+        if ((row === fromRow && col === fromCol) || (row === toRow && col === toCol)) {
+          square.classList.add('last-move-highlight');
+        }
+      }
+
       const piece = gameState.board[row][col];
       if (piece) {
         const pieceEl = document.createElement('div');
@@ -1831,9 +1840,6 @@ function endGame(winner, reason = 'checkmate') {
   setTimeout(() => {
     let message = '';
 
-    // Add last move to message
-    const lastMoveText = gameState.lastMove ? `\n\nLast move: ${gameState.lastMove.algebraic}` : '';
-
     // Special message if Trash Talker loses
     if (gameState.gameMode === 'ai-trashtalker' && winner === 'white') {
       const finalRoasts = [
@@ -1846,27 +1852,26 @@ function endGame(winner, reason = 'checkmate') {
         "💬 Trash Talker: \"I'm still 3400 Elo! You just got lucky!\"\n\n🎉 You beat the Trash Talker!",
         "💬 Trash Talker: \"That was lag! 100% lag! REMATCH!\"\n\n🎉 You beat the Trash Talker!"
       ];
-      message = finalRoasts[Math.floor(Math.random() * finalRoasts.length)] + lastMoveText;
+      message = finalRoasts[Math.floor(Math.random() * finalRoasts.length)];
     } else if (winner === 'draw') {
       if (reason === 'stalemate') {
-        message = '🤝 Game Over - Stalemate!\n\nNo legal moves available.' + lastMoveText;
+        message = '🤝 Game Over - Stalemate!\n\nNo legal moves available.';
       } else if (reason === 'insufficient') {
-        message = '🤝 Game Over - Draw!\n\nInsufficient material to checkmate.' + lastMoveText;
+        message = '🤝 Game Over - Draw!\n\nInsufficient material to checkmate.';
       } else if (reason === 'fifty') {
-        message = '🤝 Game Over - Draw!\n\n50 move rule.' + lastMoveText;
+        message = '🤝 Game Over - Draw!\n\n50 move rule.';
       } else {
-        message = '🤝 Game Over - Draw!' + lastMoveText;
+        message = '🤝 Game Over - Draw!';
       }
     } else {
       const winnerName = winner.charAt(0).toUpperCase() + winner.slice(1);
       if (reason === 'timeout') {
-        message = `⏱️ ${winnerName} wins by timeout!` + lastMoveText;
+        message = `⏱️ ${winnerName} wins by timeout!`;
       } else {
         message = `🎉 Checkmate! ${winnerName} wins!`;
         if (winner === 'white') {
           message += '\n\n🎊 Congratulations! 🎊';
         }
-        message += lastMoveText;
       }
     }
     alert(message);
@@ -2867,11 +2872,22 @@ async function makeAIMove() {
   const move = await getAIMove(fen, gameState.gameMode);
 
   if (move) {
+    // Move can be either a string "e2e4" or an object {from: "e2", to: "e4", ...}
+    let moveStr;
+    if (typeof move === 'string') {
+      moveStr = move;
+    } else if (move.from && move.to) {
+      moveStr = move.from + move.to;
+    } else {
+      console.error('Invalid move format:', move);
+      return;
+    }
+
     // Parse move (format: "e2e4" or "e2e4q")
-    const fromCol = move.charCodeAt(0) - 97;
-    const fromRow = 8 - parseInt(move[1]);
-    const toCol = move.charCodeAt(2) - 97;
-    const toRow = 8 - parseInt(move[3]);
+    const fromCol = moveStr.charCodeAt(0) - 97;
+    const fromRow = 8 - parseInt(moveStr[1]);
+    const toCol = moveStr.charCodeAt(2) - 97;
+    const toRow = 8 - parseInt(moveStr[3]);
 
     // Make the move
     makeMove(fromRow, fromCol, toRow, toCol);
@@ -2881,6 +2897,12 @@ async function makeAIMove() {
 // Convert board to FEN notation
 function boardToFEN() {
   let fen = '';
+
+  // Piece mapping from Unicode to FEN
+  const pieceMap = {
+    '♔': 'K', '♕': 'Q', '♖': 'R', '♗': 'B', '♘': 'N', '♙': 'P',
+    '♚': 'k', '♛': 'q', '♜': 'r', '♝': 'b', '♞': 'n', '♟': 'p'
+  };
 
   // Board position
   for (let row = 0; row < 8; row++) {
@@ -2892,7 +2914,8 @@ function boardToFEN() {
           fen += emptyCount;
           emptyCount = 0;
         }
-        fen += piece;
+        // Convert Unicode piece to FEN notation
+        fen += pieceMap[piece] || piece;
       } else {
         emptyCount++;
       }
