@@ -290,21 +290,71 @@ class ChessyAI {
 
     /**
      * CHESSY 1.3 - Neural Network with Deep Search (Depth 7)
-     * ~2500 ELO (IM level)
+     * ~1700 ELO (IM level)
      */
     async chessy13(fen) {
-        // For now, use Stockfish depth 20 as placeholder
-        // TODO: Integrate with neural-ai/chess_engine_deep_search.py
+        // Call Python neural AI server
+        try {
+            const response = await fetch('http://localhost:5000/get_move', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fen: fen,
+                    depth: 7,
+                    temperature: 0.1
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const game = new Chess(fen);
+                const move = game.move({
+                    from: data.move.substring(0, 2),
+                    to: data.move.substring(2, 4),
+                    promotion: data.move[4] || undefined
+                });
+                return move;
+            }
+        } catch (error) {
+            console.warn('Python neural AI server not available, falling back to Stockfish');
+        }
+
+        // Fallback to Stockfish if Python server unavailable
         return await this.stockfishMove(fen, 20);
     }
 
     /**
      * CHESSY 1.4 - Neural Network with Smart Quiescence (Depth 10+)
-     * ~2700+ ELO (GM level)
+     * ~1800 ELO (Expert level)
      */
     async chessy14(fen) {
-        // For now, use Stockfish depth 25 as placeholder
-        // TODO: Integrate with neural-ai/chess_engine_quiescence.py
+        // Call Python neural AI server
+        try {
+            const response = await fetch('http://localhost:5000/get_move', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fen: fen,
+                    depth: 10,
+                    temperature: 0.05
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const game = new Chess(fen);
+                const move = game.move({
+                    from: data.move.substring(0, 2),
+                    to: data.move.substring(2, 4),
+                    promotion: data.move[4] || undefined
+                });
+                return move;
+            }
+        } catch (error) {
+            console.warn('Python neural AI server not available, falling back to Stockfish');
+        }
+
+        // Fallback to Stockfish if Python server unavailable
         return await this.stockfishMove(fen, 25);
     }
 

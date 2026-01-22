@@ -224,15 +224,6 @@ function renderBoard() {
       square.dataset.row = row;
       square.dataset.col = col;
 
-      // Highlight last move squares
-      if (gameState.lastMove) {
-        const [fromRow, fromCol] = gameState.lastMove.from;
-        const [toRow, toCol] = gameState.lastMove.to;
-        if ((row === fromRow && col === fromCol) || (row === toRow && col === toCol)) {
-          square.classList.add('last-move-highlight');
-        }
-      }
-
       const piece = gameState.board[row][col];
       if (piece) {
         const pieceEl = document.createElement('div');
@@ -1840,6 +1831,9 @@ function endGame(winner, reason = 'checkmate') {
   setTimeout(() => {
     let message = '';
 
+    // Add last move to message
+    const lastMoveText = gameState.lastMove ? `\n\nLast move: ${gameState.lastMove.algebraic}` : '';
+
     // Special message if Trash Talker loses
     if (gameState.gameMode === 'ai-trashtalker' && winner === 'white') {
       const finalRoasts = [
@@ -1852,26 +1846,27 @@ function endGame(winner, reason = 'checkmate') {
         "💬 Trash Talker: \"I'm still 3400 Elo! You just got lucky!\"\n\n🎉 You beat the Trash Talker!",
         "💬 Trash Talker: \"That was lag! 100% lag! REMATCH!\"\n\n🎉 You beat the Trash Talker!"
       ];
-      message = finalRoasts[Math.floor(Math.random() * finalRoasts.length)];
+      message = finalRoasts[Math.floor(Math.random() * finalRoasts.length)] + lastMoveText;
     } else if (winner === 'draw') {
       if (reason === 'stalemate') {
-        message = '🤝 Game Over - Stalemate!\n\nNo legal moves available.';
+        message = '🤝 Game Over - Stalemate!\n\nNo legal moves available.' + lastMoveText;
       } else if (reason === 'insufficient') {
-        message = '🤝 Game Over - Draw!\n\nInsufficient material to checkmate.';
+        message = '🤝 Game Over - Draw!\n\nInsufficient material to checkmate.' + lastMoveText;
       } else if (reason === 'fifty') {
-        message = '🤝 Game Over - Draw!\n\n50 move rule.';
+        message = '🤝 Game Over - Draw!\n\n50 move rule.' + lastMoveText;
       } else {
-        message = '🤝 Game Over - Draw!';
+        message = '🤝 Game Over - Draw!' + lastMoveText;
       }
     } else {
       const winnerName = winner.charAt(0).toUpperCase() + winner.slice(1);
       if (reason === 'timeout') {
-        message = `⏱️ ${winnerName} wins by timeout!`;
+        message = `⏱️ ${winnerName} wins by timeout!` + lastMoveText;
       } else {
         message = `🎉 Checkmate! ${winnerName} wins!`;
         if (winner === 'white') {
           message += '\n\n🎊 Congratulations! 🎊';
         }
+        message += lastMoveText;
       }
     }
     alert(message);
