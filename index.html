@@ -711,8 +711,8 @@
         <button class="modal-close" id="auth-modal-close">&times;</button>
       </div>
       <form id="auth-form">
-        <input type="email" id="auth-email" placeholder="Email" required>
-        <input type="password" id="auth-password" placeholder="Password" required>
+        <input type="email" id="auth-email" placeholder="Email" autocomplete="email" required>
+        <input type="password" id="auth-password" placeholder="Password" autocomplete="current-password" required>
         <button type="submit" class="btn btn-primary" id="auth-submit">Sign Up</button>
         <p id="auth-toggle-text">Already have an account? <a href="#" id="toggle-login">Log In</a></p>
         <div id="auth-error" class="auth-error" style="display: none; color: #e74c3c; margin-top: 1rem;"></div>
@@ -750,6 +750,7 @@
       </div>
     </div>
   </div>
+  <script src="script.js"></script>
 </body>
 
 </html>
