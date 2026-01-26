@@ -9,6 +9,7 @@ const socketIO = require('socket.io');
 const path = require('path');
 const { Chess } = require('chess.js');
 const { ChessyAI, AI_PERSONALITIES } = require('./simple-ai.js');
+const { spawn } = require('child_process');
 
 const app = express();
 const server = http.createServer(app);
@@ -18,6 +19,18 @@ const io = socketIO(server, {
         methods: ["GET", "POST"]
     }
 });
+
+// Start Python neural AI server
+let pythonServer = null;
+
+function startPythonServer() {
+    // Python server startup disabled - use manual startup instead
+    // To start Python server manually, run: python neural-ai/chess_ai_server.py
+    console.log('⚠️ Python neural AI server not auto-started');
+    console.log('📝 To use your trained neural AI, run manually:');
+    console.log('   python neural-ai/chess_ai_server.py');
+    console.log('🔄 Falling back to Stockfish for Chessy 1.3 and 1.4');
+}
 
 // Serve static files with proper MIME types
 app.use(express.static(__dirname, {
@@ -268,10 +281,15 @@ const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 
 server.listen(PORT, HOST, () => {
-    console.log('🏰 ChessyCom Server Started!');
+    console.log('🏰 Chessy Server Started!');
     console.log(`📡 Server running on http://localhost:${PORT}`);
     console.log(`🎮 Open http://localhost:${PORT} in your browser`);
     console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log('');
+
+    // Start Python neural AI server
+    startPythonServer();
+
     console.log('');
     if (process.env.NODE_ENV !== 'production') {
         console.log('🌐 To play with friends on same network:');
