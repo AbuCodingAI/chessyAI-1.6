@@ -30,9 +30,10 @@ Runtime:                 Docker
 Region:                  Oregon (US West)
 Branch:                  main
 Root Directory:          (leave blank)
-Build Command:           ./build.sh && pip install -r requirements.txt
-Start Command:           python3 train_cloud.py
+Dockerfile Path:         chessy-1.6/Dockerfile
 ```
+
+**Note**: Render will automatically use the Dockerfile to build and run your project. The `.sh` scripts work fine on Render's Linux servers, even though you're on Windows.
 
 ### Step 4: Environment Variables (Optional)
 
@@ -54,9 +55,21 @@ Click **"Create Background Worker"**
 
 Render will:
 1. Clone your repository
-2. Run build command
+2. Build Docker image (using Dockerfile)
 3. Start training
 4. Run continuously
+
+---
+
+## Why Docker?
+
+You're on Windows, but Render runs on Linux. The Dockerfile handles this automatically:
+- Installs Linux dependencies
+- Downloads Stockfish for Linux
+- Builds the C++ project
+- Runs the training
+
+You don't need to do anything special on Windows!
 
 ---
 
