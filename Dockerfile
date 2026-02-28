@@ -31,8 +31,9 @@ RUN rm -rf chessy-1.6/build
 WORKDIR /app/chessy-1.6
 RUN chmod +x build.sh && ./build.sh
 
-# Stockfish is optional - training can work without it
-# If needed, download manually or provide the binary
+# Use Stockfish binary from repository
+RUN mkdir -p /app/chessy-1.6/stockfish && \
+    chmod +x /app/chessy-1.6/stockfish/stockfish.exe 2>/dev/null || true
 
 # Set working directory back to root
 WORKDIR /app
