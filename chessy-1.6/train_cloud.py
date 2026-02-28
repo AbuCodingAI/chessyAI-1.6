@@ -52,8 +52,9 @@ class ChessyCloudTrainer:
         """Ping the service every 10 minutes to prevent sleep (Render free tier)"""
         print("✓ Keep-alive thread started (pings every 10 minutes)")
         
-        # Get Render URL from environment or use default
-        render_url = os.environ.get('RENDER_EXTERNAL_URL', 'http://localhost:3000')
+        # Get Render URL from environment or use hardcoded URL
+        render_url = os.environ.get('RENDER_EXTERNAL_URL', 'https://chessyai-1-6.onrender.com')
+        print(f"  Keep-alive URL: {render_url}")
         
         while self.keep_alive_running:
             try:
@@ -61,12 +62,12 @@ class ChessyCloudTrainer:
                 
                 # Ping the Render service URL
                 try:
-                    response = requests.get(f'{render_url}/health', timeout=5)
-                    print(f"[Keep-Alive] Ping successful at {datetime.now().strftime('%H:%M:%S')}")
-                except requests.exceptions.RequestException:
+                    response = requests.get(f'{render_url}/', timeout=5)
+                    print(f"[Keep-Alive] Ping successful ({response.status_code}) at {datetime.now().strftime('%H:%M:%S')}")
+                except requests.exceptions.RequestException as e:
                     # Ping failed, but that's OK - just trying to generate HTTP traffic
                     # Even failed requests count as activity
-                    print(f"[Keep-Alive] Ping attempt at {datetime.now().strftime('%H:%M:%S')} (no endpoint)")
+                    print(f"[Keep-Alive] Ping attempt at {datetime.now().strftime('%H:%M:%S')} (connection attempt)")
             except Exception as e:
                 # Continue even if something goes wrong
                 pass
