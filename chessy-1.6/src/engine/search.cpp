@@ -5,7 +5,7 @@
 
 Search::Search(Evaluator* evaluator) : evaluator(evaluator), nodesSearched(0) {}
 
-Move Search::findBestMove(Board& board, int depth, int timeLimit) {
+Move Search::findBestMove(Board& board, int depth, int /*timeLimit*/) {
     MoveGenerator moveGen;
     std::vector<Move> moves = moveGen.generateLegalMoves(board);
     

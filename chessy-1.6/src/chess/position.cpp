@@ -12,17 +12,17 @@ int Position::getMaterialCount(Color color) const {
     return material;
 }
 
-float Position::getPieceActivity(Color color) const {
+float Position::getPieceActivity(Color /*color*/) const {
     // TODO: Implement piece activity evaluation
     return 0.0f;
 }
 
-float Position::getKingSafety(Color color) const {
+float Position::getKingSafety(Color /*color*/) const {
     // TODO: Implement king safety evaluation
     return 0.0f;
 }
 
-float Position::getPawnStructure(Color color) const {
+float Position::getPawnStructure(Color /*color*/) const {
     // TODO: Implement pawn structure evaluation
     return 0.0f;
 }

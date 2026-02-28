@@ -191,7 +191,6 @@ void Trainer::selfPlay() {
     std::cout << "Playing " << config.numSelfPlayGames << " self-play games..." << std::endl;
     
     float wins = 0;
-    MoveGenerator moveGen;  // Reuse instead of creating each game
     
     for (int i = 0; i < config.numSelfPlayGames; i++) {
         float result = playGame(true, 5);  // 5 seconds per move
@@ -291,7 +290,7 @@ float Trainer::evaluatePosition(const Board& board) {
     return network.evaluate(features);
 }
 
-float Trainer::playGame(bool useNeuralNetwork, int timePerMove) {
+float Trainer::playGame(bool useNeuralNetwork, int /*timePerMove*/) {
     Board board;
     board.fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     

@@ -22,7 +22,7 @@ float StockfishInterface::getEvaluation(const std::string& fen, int depth) {
     return 0.0f;
 }
 
-std::vector<Position> StockfishInterface::generateTrainingData(int numGames, int depth, float blunderRate) {
+std::vector<Position> StockfishInterface::generateTrainingData(int numGames, int /*depth*/, float /*blunderRate*/) {
     std::vector<Position> positions;
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -34,7 +34,7 @@ std::vector<Position> StockfishInterface::generateTrainingData(int numGames, int
     return positions;
 }
 
-Move StockfishInterface::getBlunderMove(const std::string& fen) {
+Move StockfishInterface::getBlunderMove(const std::string& /*fen*/) {
     // TODO: Implement blunder move selection
     return Move(0, 1);
 }
@@ -43,7 +43,7 @@ bool StockfishInterface::isRunning() const {
     return process != nullptr;
 }
 
-void StockfishInterface::sendCommand(const std::string& command) {
+void StockfishInterface::sendCommand(const std::string& /*command*/) {
     // TODO: Implement command sending
 }
 
@@ -52,12 +52,12 @@ std::string StockfishInterface::readOutput() {
     return "";
 }
 
-Move StockfishInterface::parseBestMove(const std::string& output) {
+Move StockfishInterface::parseBestMove(const std::string& /*output*/) {
     // TODO: Parse Stockfish output
     return Move(0, 1);
 }
 
-float StockfishInterface::parseEvaluation(const std::string& output) {
+float StockfishInterface::parseEvaluation(const std::string& /*output*/) {
     // TODO: Parse evaluation from output
     return 0.0f;
 }

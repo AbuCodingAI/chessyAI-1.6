@@ -6,7 +6,6 @@ std::vector<Move> MoveGenerator::generateLegalMoves(Board& board) {
     std::vector<Move> legal;
     
     Color currentColor = board.getTurn();
-    Color opponentColor = (currentColor == Color::WHITE) ? Color::BLACK : Color::WHITE;
     
     for (const Move& move : pseudoLegal) {
         board.makeMove(move);

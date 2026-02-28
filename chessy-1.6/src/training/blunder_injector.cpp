@@ -1,7 +1,7 @@
 #include "blunder_injector.h"
 #include <random>
 
-Move BlunderInjector::injectBlunder(const Board& board, const std::vector<Move>& legalMoves, float blunderRate) {
+Move BlunderInjector::injectBlunder(const Board& /*board*/, const std::vector<Move>& legalMoves, float blunderRate) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0.0, 1.0);
@@ -15,7 +15,7 @@ Move BlunderInjector::injectBlunder(const Board& board, const std::vector<Move>&
     return legalMoves[0];
 }
 
-bool BlunderInjector::isBlunder(const Board& board, const Move& move, float threshold) {
+bool BlunderInjector::isBlunder(const Board& /*board*/, const Move& /*move*/, float /*threshold*/) {
     // TODO: Implement blunder detection
     return false;
 }

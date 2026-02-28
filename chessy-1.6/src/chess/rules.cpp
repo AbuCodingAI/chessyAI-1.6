@@ -57,12 +57,12 @@ bool ChessRules::isStalemate(Board& board) {
     return board.isStalemate(board.getTurn());
 }
 
-bool ChessRules::isThreefoldRepetition(const Board& board) {
+bool ChessRules::isThreefoldRepetition(const Board& /*board*/) {
     // TODO: Implement threefold repetition check
     return false;
 }
 
-bool ChessRules::isFiftyMoveRule(const Board& board) {
+bool ChessRules::isFiftyMoveRule(const Board& /*board*/) {
     // TODO: Implement fifty move rule check
     return false;
 }

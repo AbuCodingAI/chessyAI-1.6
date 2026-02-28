@@ -63,17 +63,17 @@ float Evaluator::evaluateMaterial(const Board& board) {
     return eval / 100.0f;  // Normalize
 }
 
-float Evaluator::evaluatePieceActivity(const Board& board) {
+float Evaluator::evaluatePieceActivity(const Board& /*board*/) {
     // TODO: Implement piece activity evaluation
     return 0.0f;
 }
 
-float Evaluator::evaluateKingSafety(const Board& board) {
+float Evaluator::evaluateKingSafety(const Board& /*board*/) {
     // TODO: Implement king safety evaluation
     return 0.0f;
 }
 
-float Evaluator::evaluatePawnStructure(const Board& board) {
+float Evaluator::evaluatePawnStructure(const Board& /*board*/) {
     // TODO: Implement pawn structure evaluation
     return 0.0f;
 }
