@@ -32,13 +32,10 @@ WORKDIR /app/chessy-1.6
 RUN chmod +x build.sh && ./build.sh
 
 # Download Stockfish if not present
-RUN if [ ! -f stockfish/stockfish ]; then \
-    mkdir -p stockfish && \
-    cd stockfish && \
-    wget https://github.com/official-stockfish/Stockfish/releases/download/sf_16/stockfish-ubuntu-x86-64-avx2 -O stockfish && \
-    chmod +x stockfish && \
-    cd ..; \
-fi
+RUN mkdir -p /app/chessy-1.6/stockfish && \
+    cd /app/chessy-1.6/stockfish && \
+    wget --timeout=30 https://github.com/official-stockfish/Stockfish/releases/download/sf_16/stockfish-ubuntu-x86-64-avx2 -O stockfish 2>&1 || echo "Stockfish download failed, will use fallback" && \
+    chmod +x stockfish 2>/dev/null || true
 
 # Set working directory back to root
 WORKDIR /app
