@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <cstdint>
+#include <cstddef>
 
 struct TranspositionEntry {
     float eval;
