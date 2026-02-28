@@ -29,7 +29,10 @@ RUN rm -rf chessy-1.6/build
 
 # Build the C++ project
 WORKDIR /app/chessy-1.6
-RUN chmod +x build.sh && ./build.sh 2>&1 | tee build.log || (cat build.log && exit 1)
+RUN mkdir -p build && cd build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    make -j4 && \
+    ls -la bin/ || echo "Binary not found in bin/"
 
 # Install Stockfish from apt repository
 RUN apt-get update && apt-get install -y stockfish && rm -rf /var/lib/apt/lists/*
