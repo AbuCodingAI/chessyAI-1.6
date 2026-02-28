@@ -10,8 +10,8 @@ During training, the service is active (CPU usage), but Render might still sleep
 
 The `train_cloud.py` includes an automatic **keep-alive pinger** that:
 - Runs in a background thread
-- Pings the service every 10 minutes
-- Prevents sleep during training
+- Pings the Render service URL every 10 minutes
+- Generates HTTP traffic to prevent sleep
 - Runs automatically (no configuration needed)
 
 ---
@@ -23,16 +23,28 @@ The `train_cloud.py` includes an automatic **keep-alive pinger** that:
 ```python
 def _keep_alive_ping(self):
     """Ping the service every 10 minutes to prevent sleep"""
+    render_url = os.environ.get('RENDER_EXTERNAL_URL', 'http://localhost:3000')
+    
     while self.keep_alive_running:
         time.sleep(600)  # Wait 10 minutes
         
-        # Try to ping localhost
+        # Ping the Render service URL
         try:
-            requests.get('http://localhost:3000/health', timeout=5)
+            requests.get(f'{render_url}/health', timeout=5)
             print(f"[Keep-Alive] Ping successful")
         except:
-            pass  # Continue even if ping fails
+            # Even failed requests count as activity
+            print(f"[Keep-Alive] Ping attempt (no endpoint)")
 ```
+
+### How It Gets the URL
+
+Render automatically sets `RENDER_EXTERNAL_URL` environment variable:
+```
+RENDER_EXTERNAL_URL=https://chessy-1-6-trainer.onrender.com
+```
+
+The keep-alive uses this to ping itself.
 
 ### Automatic Startup
 
@@ -62,7 +74,7 @@ self.keep_alive_running = False
 ✓ Keep-alive thread started (pings every 10 minutes)
 [Keep-Alive] Ping successful at 10:05:23
 [Keep-Alive] Ping successful at 10:15:23
-[Keep-Alive] Ping successful at 10:25:23
+[Keep-Alive] Ping attempt (no endpoint) at 10:25:23
 ...
 ```
 
@@ -90,55 +102,43 @@ Expected output:
 
 ---
 
-## Ping Targets
+## Ping Target
 
-The keep-alive tries multiple ports:
+The keep-alive pings the **Render service URL**:
 
-1. **Port 3000** (primary)
-   - Common Node.js port
-   - Fallback if training doesn't expose HTTP
+```
+https://chessy-1-6-trainer.onrender.com/health
+```
 
-2. **Port 8000** (secondary)
-   - Common Python port
-   - Fallback if port 3000 fails
+This is obtained from the `RENDER_EXTERNAL_URL` environment variable that Render automatically sets.
 
-3. **Silently fails** if neither works
-   - Training continues anyway
-   - CPU activity keeps service awake
+### Why This Works
 
----
+1. **Render sets the URL automatically**
+   - Every Web Service gets a unique URL
+   - Stored in `RENDER_EXTERNAL_URL` env var
+   - Available inside the container
 
-## Why Multiple Ports?
+2. **Pinging generates HTTP traffic**
+   - Even if `/health` endpoint doesn't exist
+   - Failed requests still count as activity
+   - Prevents Render from sleeping
 
-The training binary doesn't expose an HTTP endpoint, so the keep-alive:
-- Tries to ping common ports
-- Fails gracefully if no endpoint exists
-- Continues running anyway
-
-The important part is that **any HTTP request** (even failed ones) counts as activity and prevents sleep.
-
----
-
-## Timing
-
-### Keep-Alive Schedule
-- Starts: When training begins
-- Interval: Every 10 minutes
-- Stops: When training ends
-
-### Why 10 Minutes?
-- Render sleeps after 15 minutes of inactivity
-- 10 minute pings = 5 minute safety margin
-- Ensures service stays awake
+3. **Timing is perfect**
+   - Render sleeps after 15 min inactivity
+   - 10 min pings = 5 min safety margin
+   - Ensures service stays awake
 
 ---
 
-## What If Keep-Alive Fails?
+## What If Ping Fails?
 
-### If Pings Fail
-- Training continues normally
-- CPU activity keeps service awake
-- No impact on training
+### If Endpoint Doesn't Exist
+```
+[Keep-Alive] Ping attempt (no endpoint)
+```
+
+This is **normal and expected**! The training binary doesn't expose HTTP endpoints, so pings will fail. But the important part is that **any HTTP request** (even failed ones) counts as activity.
 
 ### If Service Still Sleeps
 - Render might have other inactivity detection
@@ -147,22 +147,28 @@ The important part is that **any HTTP request** (even failed ones) counts as act
 
 ### If You See Errors
 ```
-[Keep-Alive] Ping failed
+[Keep-Alive] Error: Connection refused
 ```
 
-This is normal! The training binary doesn't expose HTTP endpoints, so pings will fail. The important part is that the service stays active due to CPU usage.
+This means the service URL isn't accessible. Check:
+1. Service is running
+2. `RENDER_EXTERNAL_URL` is set
+3. Network connectivity
 
 ---
 
 ## Manual Keep-Alive (Alternative)
 
-If automatic keep-alive doesn't work, you can manually ping:
+If automatic keep-alive doesn't work, you can manually ping from your computer:
 
 ### From Your Computer
 ```bash
+# Get your Render URL from dashboard
+RENDER_URL="https://chessy-1-6-trainer.onrender.com"
+
 # Ping every 10 minutes
 while true; do
-  curl https://your-render-url.onrender.com/
+  curl $RENDER_URL/
   sleep 600
 done
 ```
@@ -208,7 +214,7 @@ Configure to ping your Render URL every 10 minutes.
 ### Default Settings
 - Interval: 10 minutes
 - Timeout: 5 seconds
-- Ports: 3000, 8000
+- URL: From `RENDER_EXTERNAL_URL` env var
 - Behavior: Fail silently
 
 ### To Change Interval
@@ -220,13 +226,19 @@ time.sleep(600)  # Change 600 to desired seconds
 # 900 = 15 minutes
 ```
 
+### To Use Custom URL
+Set environment variable in Render dashboard:
+```
+RENDER_EXTERNAL_URL=https://your-custom-url.com
+```
+
 ---
 
 ## Summary
 
 ✅ **Automatic**: Keep-alive runs automatically
-✅ **Background**: Runs in separate thread
-✅ **Safe**: Fails gracefully if pings don't work
+✅ **Self-Pinging**: Pings the Render service URL
+✅ **Safe**: Fails gracefully if endpoint doesn't exist
 ✅ **Effective**: Prevents Render free tier sleep
 ✅ **No Configuration**: Works out of the box
 
