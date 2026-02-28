@@ -3,6 +3,7 @@
 Chessy 1.6 Cloud Training Wrapper
 Runs the C++ training engine with cloud-specific optimizations
 Handles checkpointing, monitoring, and graceful shutdown
+Includes keep-alive pinging to prevent Render free tier sleep
 """
 
 import subprocess
@@ -11,6 +12,8 @@ import sys
 import json
 import time
 import signal
+import threading
+import requests
 from pathlib import Path
 from datetime import datetime
 
@@ -22,6 +25,8 @@ class ChessyCloudTrainer:
         self.log_file = "training.log"
         self.config_file = "training_config.json"
         self.process = None
+        self.keep_alive_thread = None
+        self.keep_alive_running = False
         
         # Create directories
         Path(self.checkpoint_dir).mkdir(exist_ok=True)
@@ -34,6 +39,7 @@ class ChessyCloudTrainer:
     def _handle_shutdown(self, signum, frame):
         """Gracefully shutdown training"""
         print("\n⚠ Shutdown signal received. Saving checkpoint...")
+        self.keep_alive_running = False  # Stop keep-alive thread
         if self.process:
             self.process.terminate()
             try:
@@ -41,6 +47,30 @@ class ChessyCloudTrainer:
             except subprocess.TimeoutExpired:
                 self.process.kill()
         sys.exit(0)
+    
+    def _keep_alive_ping(self):
+        """Ping the service every 10 minutes to prevent sleep (Render free tier)"""
+        print("✓ Keep-alive thread started (pings every 10 minutes)")
+        
+        while self.keep_alive_running:
+            try:
+                time.sleep(600)  # Wait 10 minutes
+                
+                # Try to ping localhost (self)
+                try:
+                    response = requests.get('http://localhost:3000/health', timeout=5)
+                    print(f"[Keep-Alive] Ping successful at {datetime.now().strftime('%H:%M:%S')}")
+                except:
+                    # If port 3000 doesn't work, try other common ports
+                    try:
+                        response = requests.get('http://localhost:8000/health', timeout=5)
+                        print(f"[Keep-Alive] Ping successful at {datetime.now().strftime('%H:%M:%S')}")
+                    except:
+                        # Silently fail - service might not have HTTP endpoint
+                        pass
+            except Exception as e:
+                # Continue even if ping fails
+                pass
     
     def create_config(self):
         """Create training configuration for cloud deployment (FREE TIER OPTIMIZED)"""
@@ -127,6 +157,11 @@ class ChessyCloudTrainer:
         # Create config
         self.create_config()
         
+        # Start keep-alive thread (for Render free tier)
+        self.keep_alive_running = True
+        self.keep_alive_thread = threading.Thread(target=self._keep_alive_ping, daemon=True)
+        self.keep_alive_thread.start()
+        
         # Run training
         try:
             print("Starting training process...")
@@ -147,6 +182,9 @@ class ChessyCloudTrainer:
             
             returncode = self.process.wait()
             
+            # Stop keep-alive thread
+            self.keep_alive_running = False
+            
             print("\n" + "="*60)
             print(f"Training completed with exit code: {returncode}")
             print(f"End time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -157,6 +195,7 @@ class ChessyCloudTrainer:
             
         except Exception as e:
             print(f"❌ Error running training: {e}")
+            self.keep_alive_running = False
             return False
     
     def monitor_training(self):
