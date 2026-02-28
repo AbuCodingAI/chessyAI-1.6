@@ -13,6 +13,9 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     curl \
     wget \
+    libeigen3-dev \
+    libboost-all-dev \
+    nlohmann-json3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy project files
