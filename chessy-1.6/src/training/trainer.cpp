@@ -430,3 +430,14 @@ bool Trainer::hasTimeRemaining() {
     
     return elapsed.count() < config.maxTrainingHours;
 }
+
+
+void Trainer::saveModel(const std::string& path) {
+    network.saveWeights(path);
+    std::cout << "✓ Model saved to " << path << std::endl;
+}
+
+void Trainer::loadModel(const std::string& path) {
+    network.loadWeights(path);
+    std::cout << "✓ Model loaded from " << path << std::endl;
+}

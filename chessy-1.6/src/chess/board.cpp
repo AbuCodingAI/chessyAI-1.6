@@ -412,3 +412,13 @@ void Board::print() const {
     }
     std::cout << "  a b c d e f g h\n\n";
 }
+
+
+// Castling rights
+bool Board::canCastleKingside(Color color) const {
+    return castleRights[static_cast<int>(color)][0];
+}
+
+bool Board::canCastleQueenside(Color color) const {
+    return castleRights[static_cast<int>(color)][1];
+}
