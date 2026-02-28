@@ -17,15 +17,11 @@ cd build
 
 REM Configure with CMake
 echo Configuring CMake...
-cmake .. -G "Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=Release
+cmake .. -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Release
 
 if errorlevel 1 (
     echo.
     echo ERROR: CMake configuration failed!
-    echo Make sure you have:
-    echo   - Visual Studio 2019 or later
-    echo   - CMake 3.16 or later
-    echo   - vcpkg with Eigen, Boost, nlohmann-json installed
     echo.
     pause
     exit /b 1

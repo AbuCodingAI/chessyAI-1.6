@@ -3,12 +3,22 @@
 Position::Position(const Board& board) : board(board) {}
 
 int Position::getMaterialCount(Color color) const {
+    // Helper lambda for popcount (portable)
+    auto popcount = [](Bitboard b) {
+        int count = 0;
+        while (b) {
+            count += b & 1;
+            b >>= 1;
+        }
+        return count;
+    };
+    
     int material = 0;
-    material += __builtin_popcountll(board.getPieces(color, PieceType::PAWN)) * 1;
-    material += __builtin_popcountll(board.getPieces(color, PieceType::KNIGHT)) * 3;
-    material += __builtin_popcountll(board.getPieces(color, PieceType::BISHOP)) * 3;
-    material += __builtin_popcountll(board.getPieces(color, PieceType::ROOK)) * 5;
-    material += __builtin_popcountll(board.getPieces(color, PieceType::QUEEN)) * 9;
+    material += popcount(board.getPieces(color, PieceType::PAWN)) * 1;
+    material += popcount(board.getPieces(color, PieceType::KNIGHT)) * 3;
+    material += popcount(board.getPieces(color, PieceType::BISHOP)) * 3;
+    material += popcount(board.getPieces(color, PieceType::ROOK)) * 5;
+    material += popcount(board.getPieces(color, PieceType::QUEEN)) * 9;
     return material;
 }
 

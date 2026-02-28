@@ -23,10 +23,6 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 if [ $? -ne 0 ]; then
     echo ""
     echo "ERROR: CMake configuration failed!"
-    echo "Make sure you have:"
-    echo "  - GCC/Clang compiler"
-    echo "  - CMake 3.16 or later"
-    echo "  - Eigen3, Boost, nlohmann-json installed"
     echo ""
     exit 1
 fi

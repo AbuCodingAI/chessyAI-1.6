@@ -47,18 +47,28 @@ float Evaluator::evaluateMaterial(const Board& board) {
     int queenValue = 9;
     
     // White material
-    eval += __builtin_popcountll(board.getPieces(Color::WHITE, PieceType::PAWN)) * pawnValue;
-    eval += __builtin_popcountll(board.getPieces(Color::WHITE, PieceType::KNIGHT)) * knightValue;
-    eval += __builtin_popcountll(board.getPieces(Color::WHITE, PieceType::BISHOP)) * bishopValue;
-    eval += __builtin_popcountll(board.getPieces(Color::WHITE, PieceType::ROOK)) * rookValue;
-    eval += __builtin_popcountll(board.getPieces(Color::WHITE, PieceType::QUEEN)) * queenValue;
+    // Helper lambda for popcount (portable)
+    auto popcount = [](Bitboard b) {
+        int count = 0;
+        while (b) {
+            count += b & 1;
+            b >>= 1;
+        }
+        return count;
+    };
+    
+    eval += popcount(board.getPieces(Color::WHITE, PieceType::PAWN)) * pawnValue;
+    eval += popcount(board.getPieces(Color::WHITE, PieceType::KNIGHT)) * knightValue;
+    eval += popcount(board.getPieces(Color::WHITE, PieceType::BISHOP)) * bishopValue;
+    eval += popcount(board.getPieces(Color::WHITE, PieceType::ROOK)) * rookValue;
+    eval += popcount(board.getPieces(Color::WHITE, PieceType::QUEEN)) * queenValue;
     
     // Black material
-    eval -= __builtin_popcountll(board.getPieces(Color::BLACK, PieceType::PAWN)) * pawnValue;
-    eval -= __builtin_popcountll(board.getPieces(Color::BLACK, PieceType::KNIGHT)) * knightValue;
-    eval -= __builtin_popcountll(board.getPieces(Color::BLACK, PieceType::BISHOP)) * bishopValue;
-    eval -= __builtin_popcountll(board.getPieces(Color::BLACK, PieceType::ROOK)) * rookValue;
-    eval -= __builtin_popcountll(board.getPieces(Color::BLACK, PieceType::QUEEN)) * queenValue;
+    eval -= popcount(board.getPieces(Color::BLACK, PieceType::PAWN)) * pawnValue;
+    eval -= popcount(board.getPieces(Color::BLACK, PieceType::KNIGHT)) * knightValue;
+    eval -= popcount(board.getPieces(Color::BLACK, PieceType::BISHOP)) * bishopValue;
+    eval -= popcount(board.getPieces(Color::BLACK, PieceType::ROOK)) * rookValue;
+    eval -= popcount(board.getPieces(Color::BLACK, PieceType::QUEEN)) * queenValue;
     
     return eval / 100.0f;  // Normalize
 }
