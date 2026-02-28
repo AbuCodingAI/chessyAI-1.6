@@ -31,11 +31,8 @@ RUN rm -rf chessy-1.6/build
 WORKDIR /app/chessy-1.6
 RUN chmod +x build.sh && ./build.sh
 
-# Download Stockfish for Linux (Windows exe won't work in Docker)
-RUN mkdir -p /app/chessy-1.6/stockfish && \
-    cd /app/chessy-1.6/stockfish && \
-    wget https://github.com/official-stockfish/Stockfish/releases/download/sf_16/stockfish-ubuntu-x86-64-avx2 -O stockfish && \
-    chmod +x stockfish
+# Stockfish is optional - training can work without it
+# If needed, download manually or provide the binary
 
 # Set working directory back to root
 WORKDIR /app
