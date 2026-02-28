@@ -31,8 +31,11 @@ RUN rm -rf chessy-1.6/build
 WORKDIR /app/chessy-1.6
 RUN chmod +x build.sh && ./build.sh
 
-# Stockfish binary is included in the repository
-RUN chmod +x /app/stockfish/stockfish-windows-x86-64-avx2.exe 2>/dev/null || true
+# Download Stockfish for Linux
+RUN mkdir -p /app/chessy-1.6/stockfish && \
+    cd /app/chessy-1.6/stockfish && \
+    wget -q https://github.com/official-stockfish/Stockfish/releases/download/sf_16/stockfish-ubuntu-x86-64-avx2 -O stockfish && \
+    chmod +x stockfish
 
 # Set working directory back to root
 WORKDIR /app
