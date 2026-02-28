@@ -24,6 +24,9 @@ COPY . .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r chessy-1.6/requirements.txt
 
+# Clean build directory to force rebuild
+RUN rm -rf chessy-1.6/build
+
 # Build the C++ project
 WORKDIR /app/chessy-1.6
 RUN chmod +x build.sh && ./build.sh
