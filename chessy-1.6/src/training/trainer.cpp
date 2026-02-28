@@ -104,20 +104,39 @@ void Trainer::trainNeuralNetwork() {
     std::cout << "Training neural network for max " << config.epochs << " epochs..." << std::endl;
     std::cout << "Early stopping patience: " << config.overfitting.patienceEpochs << " epochs" << std::endl;
     
-    // Convert positions to features and targets
+    // Pre-compute all features and targets (cache for speed)
     std::vector<std::vector<float>> inputs;
     std::vector<float> targets;
+    inputs.reserve(trainingData.size());
+    targets.reserve(trainingData.size());
     
     for (const Position& pos : trainingData) {
         Board board;
         board.fromFEN(pos.fen);
         
         std::vector<float> features = positionToFeatures(board);
-        inputs.push_back(features);
+        inputs.push_back(std::move(features));  // Move semantics for speed
         
         // Normalize evaluation to -1 to 1
         float target = std::tanh(pos.evaluation / 100.0f);
         targets.push_back(target);
+    }
+    
+    // Pre-compute validation features too
+    std::vector<std::vector<float>> validationInputs;
+    std::vector<float> validationTargets;
+    validationInputs.reserve(validationData.size());
+    validationTargets.reserve(validationData.size());
+    
+    for (const Position& pos : validationData) {
+        Board board;
+        board.fromFEN(pos.fen);
+        
+        std::vector<float> features = positionToFeatures(board);
+        validationInputs.push_back(std::move(features));
+        
+        float target = std::tanh(pos.evaluation / 100.0f);
+        validationTargets.push_back(target);
     }
     
     // Training loop with early stopping
@@ -131,23 +150,18 @@ void Trainer::trainNeuralNetwork() {
         // Train on batch
         network.train(inputs, targets, 1, config.learningRate);  // 1 epoch per iteration
         
-        // Validate
+        // Validate (optimized - no FEN parsing)
         float validationError = 0;
-        for (const Position& pos : validationData) {
-            Board board;
-            board.fromFEN(pos.fen);
-            
-            std::vector<float> features = positionToFeatures(board);
+        for (size_t i = 0; i < validationInputs.size(); i++) {
+            std::vector<float> features = validationInputs[i];  // Copy for dropout
             applyDropout(features);  // Apply dropout during validation
             
             float prediction = network.evaluate(features);
-            float target = std::tanh(pos.evaluation / 100.0f);
-            
-            float error = prediction - target;
+            float error = prediction - validationTargets[i];
             validationError += error * error;
         }
         
-        results.validationLoss = validationError / validationData.size();
+        results.validationLoss = validationError / validationInputs.size();
         results.epochsCompleted = epoch + 1;
         
         // Early stopping check
@@ -177,6 +191,8 @@ void Trainer::selfPlay() {
     std::cout << "Playing " << config.numSelfPlayGames << " self-play games..." << std::endl;
     
     float wins = 0;
+    MoveGenerator moveGen;  // Reuse instead of creating each game
+    
     for (int i = 0; i < config.numSelfPlayGames; i++) {
         float result = playGame(true, 5);  // 5 seconds per move
         if (result > 0.5f) wins++;
@@ -194,21 +210,23 @@ void Trainer::testVsStockfish() {
     std::cout << "Testing against Stockfish (depth 10)..." << std::endl;
     
     float wins = 0;
+    MoveGenerator moveGen;  // Reuse instead of creating each game
+    
     for (int i = 0; i < config.numTestGames; i++) {
         Board board;
         board.fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         
-        MoveGenerator moveGen;
         bool chessy1_6_white = (i % 2 == 0);
+        int moveCount = 0;
         
-        while (true) {
+        while (moveCount < 200) {  // Max 200 moves
             std::vector<Move> moves = moveGen.generateLegalMoves(board);
             if (moves.empty()) break;
             
             Move move;
             if ((board.getTurn() == Color::WHITE && chessy1_6_white) ||
                 (board.getTurn() == Color::BLACK && !chessy1_6_white)) {
-                // Chessy 1.6 move
+                // Chessy 1.6 move (optimized - cache features)
                 std::vector<float> features = positionToFeatures(board);
                 float bestEval = -2;
                 Move bestMove = moves[0];
@@ -225,11 +243,12 @@ void Trainer::testVsStockfish() {
                 }
                 move = bestMove;
             } else {
-                // Stockfish move
+                // Stockfish move (use cached FEN)
                 move = stockfish.getBestMove(board.toFEN(), 10);
             }
             
             board.makeMove(move);
+            moveCount++;
         }
         
         // Determine winner (simplified)

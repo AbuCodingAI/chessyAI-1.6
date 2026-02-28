@@ -43,33 +43,33 @@ class ChessyCloudTrainer:
         sys.exit(0)
     
     def create_config(self):
-        """Create training configuration for cloud deployment"""
+        """Create training configuration for cloud deployment (FREE TIER OPTIMIZED)"""
         config = {
-            "numGamesGeneration": 1000,
-            "stockfishDepth": 15,
+            "numGamesGeneration": 500,      # Reduced from 1000
+            "stockfishDepth": 12,           # Reduced from 15
             "blunderRate": 0.05,
-            "epochs": 100,
+            "epochs": 50,                   # Reduced from 100
             "learningRate": 0.001,
             "batchSize": 32,
-            "numSelfPlayGames": 500,
-            "numTestGames": 100,
+            "numSelfPlayGames": 250,        # Reduced from 500
+            "numTestGames": 50,             # Reduced from 100
             "overfitting": {
                 "enableEarlyStopping": True,
-                "patienceEpochs": 10,
+                "patienceEpochs": 5,        # Reduced from 10
                 "minValidationImprovement": 0.001,
                 "l2Regularization": 0.0001,
                 "dropoutRate": 0.3,
                 "enableDataAugmentation": True,
                 "augmentationRate": 0.2,
                 "validationSplitRatio": 20,
-                "enableCrossValidation": True,
+                "enableCrossValidation": False,  # Disabled for speed
                 "kFolds": 5
             },
             "enableCheckpointing": True,
             "checkpointDir": self.checkpoint_dir,
-            "checkpointInterval": 5,
+            "checkpointInterval": 3,        # Save every 3 epochs (was 5)
             "isCloudDeployment": True,
-            "maxTrainingHours": 24,
+            "maxTrainingHours": 5,          # Reduced from 24 for free tier
             "modelOutputPath": f"{self.models_dir}/chessy-1.6-trained.bin"
         }
         
@@ -77,6 +77,10 @@ class ChessyCloudTrainer:
             json.dump(config, f, indent=2)
         
         print(f"✓ Configuration created: {self.config_file}")
+        print(f"  - Games: 500 (optimized for free tier)")
+        print(f"  - Depth: 12 (optimized for free tier)")
+        print(f"  - Epochs: 50 (optimized for free tier)")
+        print(f"  - Max time: 5 hours (safe for free tier)")
         return config
     
     def check_binary(self):

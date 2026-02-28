@@ -3,9 +3,9 @@
 #include <string>
 
 struct OverfittingPrevention {
-    // Early stopping
+    // Early stopping (OPTIMIZED FOR FREE TIER)
     bool enableEarlyStopping = true;
-    int patienceEpochs = 10;           // Stop if validation loss doesn't improve for N epochs
+    int patienceEpochs = 5;            // Reduced from 10 for faster stopping
     float minValidationImprovement = 0.001f;  // Minimum improvement threshold
     
     // Regularization
@@ -16,26 +16,26 @@ struct OverfittingPrevention {
     bool enableDataAugmentation = true;
     float augmentationRate = 0.2f;     // Augment 20% of training data
     
-    // Validation strategy
+    // Validation strategy (OPTIMIZED FOR FREE TIER)
     int validationSplitRatio = 20;     // 80/20 train/validation split
-    bool enableCrossValidation = true;
+    bool enableCrossValidation = false; // Disabled for speed
     int kFolds = 5;                    // K-fold cross-validation
 };
 
 struct TrainingConfig {
-    // Data generation
-    int numGamesGeneration = 1000;     // Games for data generation
-    int stockfishDepth = 15;           // Depth for Stockfish analysis
+    // Data generation (OPTIMIZED FOR FREE TIER)
+    int numGamesGeneration = 500;      // Reduced from 1000 for speed
+    int stockfishDepth = 12;           // Reduced from 15 for speed
     float blunderRate = 0.05f;         // 5% blunder injection
     
-    // Neural network training
-    int epochs = 100;                  // Max epochs (early stopping may stop earlier)
+    // Neural network training (OPTIMIZED FOR FREE TIER)
+    int epochs = 50;                   // Reduced from 100 for speed
     float learningRate = 0.001f;       // Adam learning rate
     int batchSize = 32;                // Batch size
     
-    // Self-play and testing
-    int numSelfPlayGames = 500;        // Self-play games
-    int numTestGames = 100;            // Test games vs Stockfish
+    // Self-play and testing (OPTIMIZED FOR FREE TIER)
+    int numSelfPlayGames = 250;        // Reduced from 500 for speed
+    int numTestGames = 50;             // Reduced from 100 for speed
     
     // Overfitting prevention
     OverfittingPrevention overfitting;
@@ -43,10 +43,10 @@ struct TrainingConfig {
     // Checkpointing
     bool enableCheckpointing = true;
     std::string checkpointDir = "./checkpoints";
-    int checkpointInterval = 5;        // Save every N epochs
+    int checkpointInterval = 3;        // Save every 3 epochs (was 5)
     
     // Cloud deployment
-    bool isCloudDeployment = false;
-    int maxTrainingHours = 24;         // Max training time per session
+    bool isCloudDeployment = true;     // Enable for cloud
+    int maxTrainingHours = 5;          // Reduced from 24 for free tier (safe limit)
     std::string modelOutputPath = "./models/chessy-1.6-trained.bin";
 };
