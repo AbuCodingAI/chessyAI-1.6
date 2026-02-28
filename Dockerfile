@@ -31,9 +31,8 @@ RUN rm -rf chessy-1.6/build
 WORKDIR /app/chessy-1.6
 RUN chmod +x build.sh && ./build.sh
 
-# Use Stockfish binary from repository
-RUN mkdir -p /app/chessy-1.6/stockfish && \
-    chmod +x /app/chessy-1.6/stockfish/stockfish.exe 2>/dev/null || true
+# Install Stockfish from apt repository
+RUN apt-get update && apt-get install -y stockfish && rm -rf /var/lib/apt/lists/*
 
 # Set working directory back to root
 WORKDIR /app
