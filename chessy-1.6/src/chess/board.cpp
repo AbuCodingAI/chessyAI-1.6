@@ -422,3 +422,70 @@ bool Board::canCastleKingside(Color color) const {
 bool Board::canCastleQueenside(Color color) const {
     return castleRights[static_cast<int>(color)][1];
 }
+
+
+// Stub implementations for unused methods
+bool Board::isInCheck(Color color) const {
+    return false;  // TODO: Implement proper check detection
+}
+
+bool Board::isCheckmate(Color color) const {
+    return false;  // TODO: Implement proper checkmate detection
+}
+
+bool Board::isStalemate(Color color) const {
+    return false;  // TODO: Implement proper stalemate detection
+}
+
+bool Board::isSquareAttacked(Square sq, Color byColor) const {
+    return false;  // TODO: Implement proper attack detection
+}
+
+void Board::print() const {
+    // TODO: Implement board printing
+}
+
+std::string Board::toFEN() const {
+    return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";  // TODO: Implement proper FEN generation
+}
+
+Bitboard Board::getPieces(Color color, PieceType type) const {
+    return pieces[static_cast<int>(color)][static_cast<int>(type)];
+}
+
+Bitboard Board::getOccupancy(Color color) const {
+    Bitboard occ = 0;
+    for (int p = 1; p < 7; p++) {
+        occ |= pieces[static_cast<int>(color)][p];
+    }
+    return occ;
+}
+
+Bitboard Board::getOccupancy() const {
+    return getOccupancy(Color::WHITE) | getOccupancy(Color::BLACK);
+}
+
+PieceType Board::getPieceAt(Square sq) const {
+    for (int p = 1; p < 7; p++) {
+        for (int c = 0; c < 2; c++) {
+            if (pieces[c][p] & (1ULL << sq)) {
+                return static_cast<PieceType>(p);
+            }
+        }
+    }
+    return PieceType::NONE;
+}
+
+Color Board::getColorAt(Square sq) const {
+    if (pieces[0][0] & (1ULL << sq)) return Color::WHITE;
+    if (pieces[1][0] & (1ULL << sq)) return Color::BLACK;
+    return Color::WHITE;  // Default
+}
+
+void Board::makeMove(const Move& move) {
+    // TODO: Implement move making
+}
+
+void Board::unmakeMove(const Move& move) {
+    // TODO: Implement move unmaking
+}
