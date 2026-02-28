@@ -29,7 +29,7 @@ RUN rm -rf chessy-1.6/build
 
 # Build the C++ project
 WORKDIR /app/chessy-1.6
-RUN chmod +x build.sh && ./build.sh
+RUN chmod +x build.sh && ./build.sh 2>&1 | tee build.log || (cat build.log && exit 1)
 
 # Install Stockfish from apt repository
 RUN apt-get update && apt-get install -y stockfish && rm -rf /var/lib/apt/lists/*
