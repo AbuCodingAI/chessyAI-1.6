@@ -115,11 +115,11 @@ class ChessyCloudTrainer:
     
     def check_binary(self):
         """Check if binary exists"""
-        if not os.path.exists(self.binary_path):
-            print(f"❌ Binary not found: {self.binary_path}")
-            print("Please run: build.bat (Windows) or ./build.sh (Linux/macOS)")
-            return False
-        return True
+        if os.path.exists(self.binary_path) or os.path.exists(self.binary_path + ".exe"):
+            return True
+        print(f"❌ Binary not found: {self.binary_path}")
+        print("Please run: build.bat (Windows) or ./build.sh (Linux/macOS)")
+        return False
     
     def check_stockfish(self):
         """Check if Stockfish is available"""
@@ -165,8 +165,9 @@ class ChessyCloudTrainer:
         # Run training
         try:
             print("Starting training process...")
+            binary = self.binary_path if os.path.exists(self.binary_path) else self.binary_path + ".exe"
             self.process = subprocess.Popen(
-                [self.binary_path, "--train"],
+                [binary, "--train"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,

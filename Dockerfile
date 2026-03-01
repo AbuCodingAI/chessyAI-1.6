@@ -29,7 +29,7 @@ RUN rm -rf chessy-1.6/build
 
 # Build the C++ project (or use pre-built binary if available)
 WORKDIR /app/chessy-1.6
-RUN if [ -f bin/chessy-1.6 ]; then \
+RUN if [ -f bin/chessy-1.6 ] || [ -f bin/chessy-1.6.exe ]; then \
     echo "Using pre-built binary"; \
 else \
     echo "=== Running CMake ===" && \
@@ -38,7 +38,7 @@ else \
     echo "=== Running Make ===" && \
     make -j4 2>&1 && \
     echo "=== Checking for binary ===" && \
-    test -f bin/chessy-1.6 && echo "Binary created successfully!" || (echo "ERROR: Binary not created!" && exit 1); \
+    (test -f bin/chessy-1.6 || test -f bin/chessy-1.6.exe) && echo "Binary created successfully!" || (echo "ERROR: Binary not created!" && exit 1); \
 fi
 
 # Install Stockfish from apt repository
