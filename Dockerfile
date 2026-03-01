@@ -30,15 +30,11 @@ RUN rm -rf chessy-1.6/build
 # Build the C++ project
 WORKDIR /app/chessy-1.6
 RUN mkdir -p build && cd build && \
-    echo "=== CMake Configuration ===" && \
-    cmake .. -DCMAKE_BUILD_TYPE=Release 2>&1 | tail -20 && \
-    echo "=== Building ===" && \
-    make -j4 2>&1 | tail -30 && \
-    echo "=== Verifying Binary ===" && \
-    find . -name "chessy-1.6" -type f && \
-    cp bin/chessy-1.6 ../bin/chessy-1.6 2>/dev/null || cp CMakeFiles/chessy-1.6.dir/../bin/chessy-1.6 ../bin/chessy-1.6 2>/dev/null || true && \
-    ls -lh ../bin/ && \
-    test -f ../bin/chessy-1.6 && echo "✓ Binary ready!" || (echo "✗ Binary not found, checking build output..." && find . -name "chessy-1.6" && exit 1)
+    cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    make -j4 && \
+    mkdir -p ../bin && \
+    find . -name "chessy-1.6" -type f -exec cp {} ../bin/chessy-1.6 \; && \
+    test -f ../bin/chessy-1.6 || (echo "BUILD FAILED - Binary not found" && find . -name "chessy-1.6" && exit 1)
 
 # Install Stockfish from apt repository
 RUN apt-get update && apt-get install -y stockfish && rm -rf /var/lib/apt/lists/*
