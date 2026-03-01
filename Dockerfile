@@ -35,8 +35,10 @@ RUN mkdir -p build && cd build && \
     echo "=== Building ===" && \
     make -j4 2>&1 | tail -30 && \
     echo "=== Verifying Binary ===" && \
-    ls -lh bin/ && \
-    test -f bin/chessy-1.6 && echo "✓ Binary created successfully!" || (echo "✗ ERROR: Binary not created!" && exit 1)
+    find . -name "chessy-1.6" -type f && \
+    cp bin/chessy-1.6 ../bin/chessy-1.6 2>/dev/null || cp CMakeFiles/chessy-1.6.dir/../bin/chessy-1.6 ../bin/chessy-1.6 2>/dev/null || true && \
+    ls -lh ../bin/ && \
+    test -f ../bin/chessy-1.6 && echo "✓ Binary ready!" || (echo "✗ Binary not found, checking build output..." && find . -name "chessy-1.6" && exit 1)
 
 # Install Stockfish from apt repository
 RUN apt-get update && apt-get install -y stockfish && rm -rf /var/lib/apt/lists/*
